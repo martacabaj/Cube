@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
 using System;
 
 public class TryOpenCv : MonoBehaviour
@@ -32,9 +33,9 @@ public class TryOpenCv : MonoBehaviour
 				if (devId >= 0) {
 						planeObj = GameObject.Find ("Plane");
 						texImage = new Texture2D (imWidth, imHeight, TextureFormat.RGB24, false);
-						webcamTexture = new WebCamTexture (devices [devId].name, imWidth, imHeight, 60);
+						webcamTexture = new WebCamTexture (devices [devId].name, imWidth, imHeight, 120);
 						webcamTexture.Play ();
-			
+						
 						matrix = new IplImage (imWidth, imHeight, BitDepth.U8, 3);
 				}
 		}
@@ -46,8 +47,9 @@ public class TryOpenCv : MonoBehaviour
 						Texture2DtoIplImage (matrix);
 
 						if (webcamTexture.didUpdateThisFrame) {
-								
-								DrawSquares (matrix, ConvertIntoGreyScale (matrix));
+								CvMat image = new CvMat (matrix.ROIPointer);
+								//GetThresholdedImage (matrix);
+								DrawSquares (matrix, FindPoly (matrix));
 						}
 			
 			
@@ -55,25 +57,25 @@ public class TryOpenCv : MonoBehaviour
 						Debug.Log ("Can't find camera!");
 				}
 		}
-	
+
 		void OnGUI ()
 		{
-				GUI.Label (new Rect (200, 200, 100, 90), errorMsg);
+				GUI.Label (new UnityEngine.Rect (200, 200, 100, 90), errorMsg);
 		}
 	
 		void IplImageToTexture2D (IplImage image)
 		{
-				int jBackwards = imHeight;
+				int jBackwards = image.Height;
 		
-				for (int i = 0; i < imHeight; i++) {
-						for (int j = 0; j < imWidth; j++) {
+				for (int i = 0; i < image.Height; i++) {
+						for (int j = 0; j < image.Width; j++) {
 								float b = (float)image [i, j].Val0;
 								float g = (float)image [i, j].Val1;
 								float r = (float)image [i, j].Val2;
 								Color color = new Color (r / 255.0f, g / 255.0f, b / 255.0f);
 				
 				
-								jBackwards = imHeight - i - 1; // notice it is jBackward and i
+								jBackwards = image.Height - i - 1; // notice it is jBackward and i
 								texImage.SetPixel (j, jBackwards, color);
 						}
 				}
@@ -84,6 +86,7 @@ public class TryOpenCv : MonoBehaviour
 	
 		void Texture2DtoIplImage (IplImage image)
 		{
+
 				int jBackwards = imHeight;
 		
 				for (int v=0; v<imHeight; ++v) {
@@ -95,9 +98,10 @@ public class TryOpenCv : MonoBehaviour
 								col.Val2 = (double)webcamTexture.GetPixel (u, v).r * 255;
 				
 								jBackwards = imHeight - v - 1;
-				
-								image.Set2D (jBackwards, u, col);
-								//matrix [jBackwards, u] = col;
+								if (image != null) {
+										image.Set2D (jBackwards, u, col);
+								}
+							
 						}
 				}
 			
@@ -126,7 +130,7 @@ public class TryOpenCv : MonoBehaviour
 				double dy1 = pt1.Y - pt0.Y;
 				return Math.Sqrt (Math.Pow (dx1, 2) + Math.Pow (dy1, 2));
 		}
-		private CvPoint[] ConvertIntoGreyScale (IplImage image)
+		private CvPoint[] FindPoly (IplImage image)
 		{
 				IplImage imageCopy = image.Clone ();
 				IplImage imgGreyScale = new IplImage (imWidth, imHeight, BitDepth.U8, 1);
@@ -165,6 +169,8 @@ public class TryOpenCv : MonoBehaviour
 										Cv.FindContours (imgGreyScale, storage, out contours, CvContour.SizeOf, ContourRetrieval.List, ContourChain.ApproxSimple, new CvPoint (0, 0));
 					
 										// test each contour
+										IplImage imgcopy2 = new IplImage (Cv.GetSize (image), BitDepth.U8, 3);
+
 										while (contours != null) {
 												// approximate contour with accuracy proportional
 												// to the contour perimeter
@@ -187,42 +193,15 @@ public class TryOpenCv : MonoBehaviour
 //													
 														if (isRect) {
 													
-						
 																int maxX = int.MinValue, minX = int.MaxValue, maxY = int.MinValue, minY = int.MaxValue;
 																CvSeq<CvPoint> pointInside = new CvSeq<CvPoint> (SeqType.Zero, CvSeq.SizeOf, storage);
 																for (int i = 0; i < 4; i++) {
 
-																		squares.Push (result [i].Value);
-
-																		maxX = result [i].Value.X > maxX ? result [i].Value.X : maxX;
-																		maxY = result [i].Value.Y > maxY ? result [i].Value.Y : maxY;
-
-																		minX = result [i].Value.X < minX ? result [i].Value.X : minX;
-
-																		minY = result [i].Value.Y < minY ? result [i].Value.Y : minY;
-								
-																		//IplImage hsv = new IplImage (maxX - minX, maxY - minY, BitDepth.U8, 3);
-																		for (int x=minX; x<=maxX; x++) {
-																				for (int y=minY; y<=maxY; y++) {
-																						
-																		
-																						double testResult = Cv.PointPolygonTest (result, new CvPoint2D32f (x, y), false);
-																																
-																						if (testResult >= 0) {
-																								//hsv [x - minX] [y - minY] = image [x] [y];
-//																								Debug.Log ("push");
-//																								//pointInside.Push (image [x] [y]);
-//								
-																						}
-
-																				}
-																		}
-																		
-																		//CV.DrawContours(image, contours, idx, Scalar(255), CV_FILLED);
-																		//squares.Push (result [i].Value);
 
 																}
+																
 														}
+
 												}
 						
 												// take the next contour
@@ -251,27 +230,28 @@ public class TryOpenCv : MonoBehaviour
 				// read 4 sequence elements at a time (all vertices of a square)
 				for (int i = 0; i < squares.Length; i += 4) {
 						CvPoint[] pt = new CvPoint[4];
+						using (CvMemStorage storage = new CvMemStorage()) {
+								pt [0] = squares [i + 0];
+								pt [1] = squares [i + 1];
+								pt [2] = squares [i + 2];
+								pt [3] = squares [i + 3];
+							
+								Cv.FillPoly (img, new CvPoint[][] { pt }, /*true,*/CvColor.Red,/* 3,*/LineType.AntiAlias, 0);
+								IplImageToTexture2D (img);
 				
-						// read 4 vertices
-						pt [0] = squares [i + 0];
-						pt [1] = squares [i + 1];
-						pt [2] = squares [i + 2];
-						pt [3] = squares [i + 3];
-
-						// draw the square as a closed polyline 
-		
-						Cv.FillPoly (img, new CvPoint[][] { pt }, /*true,*/CvColor.Red,/* 3,*/LineType.AntiAlias, 0);
-						
-			
-						// show the resultant image
-						IplImageToTexture2D (img);
+				
+						}
 				}
 		}
-		private void colorDetection (IplImage image)
+		private void GetThresholdedImage (IplImage image)
 		{
-				image.CvtColor (image, ColorConversion.BgrToHsv);
-				//CvArr arr = CvScalar ;
-				//image.InRange (new CvScalar (170, 150, 60), new CvScalar (179, 255, 255), image);
-				IplImageToTexture2D (image);
+				var imgHsv = Cv.CreateImage (Cv.GetSize (image), BitDepth.U8, 3);
+				Cv.CvtColor (image, imgHsv, ColorConversion.BgrToHsv);
+				var imgThreshed = Cv.CreateImage (Cv.GetSize (image), BitDepth.U8, 1);
+				Cv.InRangeS (imgHsv, new CvScalar (110, 50, 50), new CvScalar (130, 255, 255), imgThreshed);
+	//TODO erodzja dylatacja erozja dylatacja
+				IplImageToTexture2D (imgThreshed);
 		}
+
+	
 }
