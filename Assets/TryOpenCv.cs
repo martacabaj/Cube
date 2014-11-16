@@ -33,7 +33,7 @@ public class TryOpenCv : MonoBehaviour
 				if (devId >= 0) {
 						planeObj = GameObject.Find ("Plane");
 						texImage = new Texture2D (imWidth, imHeight, TextureFormat.RGB24, false);
-						webcamTexture = new WebCamTexture (devices [devId].name, imWidth, imHeight, 120);
+						webcamTexture = new WebCamTexture (devices [devId].name, imWidth, imHeight, 60);
 						webcamTexture.Play ();
 						
 						matrix = new IplImage (imWidth, imHeight, BitDepth.U8, 3);
@@ -47,9 +47,11 @@ public class TryOpenCv : MonoBehaviour
 						Texture2DtoIplImage (matrix);
 
 						if (webcamTexture.didUpdateThisFrame) {
-								CvMat image = new CvMat (matrix.ROIPointer);
-								//GetThresholdedImage (matrix);
-								DrawSquares (matrix, FindPoly (matrix));
+							
+								//IplImageToTexture2D (matrix);
+				
+								GetThresholdedImage (matrix);
+								//DrawSquares (matrix, FindPoly (matrix));
 						}
 			
 			
@@ -181,7 +183,7 @@ public class TryOpenCv : MonoBehaviour
 												// Note: absolute value of an area is used because
 												// area may be positive or negative - in accordance with the
 												// contour orientation
-					
+
 												if (result.Total == 4 && Math.Abs (result.ContourArea (CvSlice.WholeSeq)) > 100 && Math.Abs (result.ContourArea (CvSlice.WholeSeq)) < (image.Height * image.Width) / 4 && result.CheckContourConvexity ()) {
 														bool isRect = true;
 
@@ -196,12 +198,10 @@ public class TryOpenCv : MonoBehaviour
 																int maxX = int.MinValue, minX = int.MaxValue, maxY = int.MinValue, minY = int.MaxValue;
 																CvSeq<CvPoint> pointInside = new CvSeq<CvPoint> (SeqType.Zero, CvSeq.SizeOf, storage);
 																for (int i = 0; i < 4; i++) {
-
-
+																		squares.Push (result [i].Value);
+									
 																}
-																
 														}
-
 												}
 						
 												// take the next contour
@@ -238,7 +238,7 @@ public class TryOpenCv : MonoBehaviour
 							
 								Cv.FillPoly (img, new CvPoint[][] { pt }, /*true,*/CvColor.Red,/* 3,*/LineType.AntiAlias, 0);
 								IplImageToTexture2D (img);
-				
+			
 				
 						}
 				}
@@ -247,10 +247,17 @@ public class TryOpenCv : MonoBehaviour
 		{
 				var imgHsv = Cv.CreateImage (Cv.GetSize (image), BitDepth.U8, 3);
 				Cv.CvtColor (image, imgHsv, ColorConversion.BgrToHsv);
-				var imgThreshed = Cv.CreateImage (Cv.GetSize (image), BitDepth.U8, 1);
-				Cv.InRangeS (imgHsv, new CvScalar (110, 50, 50), new CvScalar (130, 255, 255), imgThreshed);
-	//TODO erodzja dylatacja erozja dylatacja
-				IplImageToTexture2D (imgThreshed);
+				using (IplImage imgThresholded = Cv.CreateImage (Cv.GetSize (image), BitDepth.U8, 1)) {
+						Cv.InRangeS (imgHsv, new CvScalar (110, 50, 50), new CvScalar (130, 255, 255), imgThresholded);
+						Cv.ReleaseImage (imgHsv);
+						IplConvKernel elementErode = Cv.CreateStructuringElementEx (4, 4, 2, 2, ElementShape.Rect, null);
+						IplConvKernel elementDilate = Cv.CreateStructuringElementEx (8, 8, 4, 4, ElementShape.Rect, null);
+						imgThresholded.Erode (imgThresholded, elementErode);
+						imgThresholded.Erode (imgThresholded, elementErode);
+						imgThresholded.Dilate (imgThresholded, elementDilate);
+						imgThresholded.Dilate (imgThresholded, elementDilate);
+						IplImageToTexture2D (imgThresholded);
+				}
 		}
 
 	
