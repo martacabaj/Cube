@@ -256,6 +256,8 @@ public class TryOpenCv : MonoBehaviour
 						imgThresholded.Erode (imgThresholded, elementErode);
 						imgThresholded.Dilate (imgThresholded, elementDilate);
 						imgThresholded.Dilate (imgThresholded, elementDilate);
+						double perc = ((double)Cv.CountNonZero (imgThresholded)) / (imgThresholded.Width * imgThresholded.Height);
+						Debug.Log ("perc " + perc);
 						IplImageToTexture2D (imgThresholded);
 				}
 		}

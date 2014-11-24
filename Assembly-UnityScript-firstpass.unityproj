@@ -69,16 +69,16 @@
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Lighted.shader" />
      <None Include="Assets\Standard Assets\Tessellation Shaders\BumpedSpecularDisplacement.shader" />
  <Reference Include="OpenCvSharp.Blob">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/VE/Cube/Assets/OpenCvSharp.Blob.dll</HintPath>
+ <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.Blob.dll</HintPath>
  </Reference>
  <Reference Include="OpenCvSharp.CPlusPlus">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/VE/Cube/Assets/OpenCvSharp.CPlusPlus.dll</HintPath>
+ <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.CPlusPlus.dll</HintPath>
  </Reference>
  <Reference Include="OpenCvSharp">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/VE/Cube/Assets/OpenCvSharp.dll</HintPath>
+ <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.dll</HintPath>
  </Reference>
  <Reference Include="OpenCvSharp.UserInterface">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/VE/Cube/Assets/OpenCvSharp.UserInterface.dll</HintPath>
+ <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.UserInterface.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
