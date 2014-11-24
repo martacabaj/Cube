@@ -12,7 +12,7 @@ using namespace cv;
 
 int thresh = 50, N = 11;
 const char* wndname = "Square Detection Demo";
-
+int area;
 // helper function:
 // finds a cosine of angle between vectors
 // from pt0->pt1 and from pt0->pt2
@@ -87,7 +87,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 // area may be positive or negative - in accordance with the
                 // contour orientation
                 if( approx.size() == 4 &&
-                    fabs(contourArea(Mat(approx))) > 1000 &&
+                    fabs(contourArea(Mat(approx))) > 1000 && fabs(contourArea(Mat(approx))) <area &&
                     isContourConvex(Mat(approx)) )
                 {
                     double maxCosine = 0;
@@ -120,13 +120,15 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 final[2]+=mean_colors.at(i)[2];
                 final[3]+=mean_colors.at(i)[3];
             }
+            if (counter != 0)
+            {
+                final[0]=final[0]/counter;
+                final[1]=final[1]/counter;
+                final[2]=final[2]/counter;
+                final[3]=final[3]/counter;
 
-            final[0]=final[0]/counter;
-            final[1]=final[1]/counter;
-            final[2]=final[2]/counter;
-            final[3]=final[3]/counter;
-
-            cout << final << endl ;
+                cout << final << endl ;
+            }
         }
     }
 }
@@ -165,6 +167,7 @@ int main()
         {
             //show captured image from capture(one frame) in result window
             Mat image = cvQueryFrame( capture );
+            area = (image.cols*image.rows) / 2;
             findSquares(image, squares);
             drawSquares(image, squares);
 
