@@ -16,6 +16,7 @@ public class TryOpenCv : MonoBehaviour
 		private int imHeight = 480;
 		private string errorMsg = "No errors found!";
 		static IplImage matrix;
+		public MeshRenderer[] UseWebcamTexture;
 	
 		// Use this for initialization
 		void Start ()
@@ -31,12 +32,25 @@ public class TryOpenCv : MonoBehaviour
 				}
 		
 				if (devId >= 0) {
+						Debug.Log("dziala");
 						planeObj = GameObject.Find ("Plane");
+						
 						texImage = new Texture2D (imWidth, imHeight, TextureFormat.RGB24, false);
 						webcamTexture = new WebCamTexture (devices [devId].name, imWidth, imHeight, 120);
-						webcamTexture.Play ();
+						
+
+			foreach(MeshRenderer r in UseWebcamTexture)
+			{
+				r.material.mainTexture = webcamTexture;
+			}
+			renderer.material.mainTexture = webcamTexture;
+			webcamTexture.Play ();
 						
 						matrix = new IplImage (imWidth, imHeight, BitDepth.U8, 3);
+
+						//Texture2DtoIplImage (matrix);
+						//CvMat image = new CvMat (matrix.ROIPointer);
+						//planeObj.renderer.material.mainTexture = texImage;
 				}
 		}
 	
@@ -47,7 +61,7 @@ public class TryOpenCv : MonoBehaviour
 						Texture2DtoIplImage (matrix);
 
 						if (webcamTexture.didUpdateThisFrame) {
-								CvMat image = new CvMat (matrix.ROIPointer);
+								//CvMat image = new CvMat (matrix.ROIPointer);
 								//GetThresholdedImage (matrix);
 								DrawSquares (matrix, FindPoly (matrix));
 						}

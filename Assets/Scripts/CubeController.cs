@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CubeController : MonoBehaviour
 {
-		private float rotationTime = 1.0f;
+		private float rotationTime = 2.0f;
 		private bool isRotating = false;
 		private Quaternion initialRotation;
 		public GameObject yellow, white, blue, green, red, orange;
@@ -16,14 +16,16 @@ public class CubeController : MonoBehaviour
 		}
 		private void GetGameObjects ()
 		{
-				yellow = GameObject.Find ("Yellow");
-				white = GameObject.Find ("White");
-				blue = GameObject.Find ("Blue");
-				green = GameObject.Find ("Green");
-				red = GameObject.Find ("Red");
-				orange = GameObject.Find ("Orange");
-				currentWall = blue;
-				
+			yellow = GameObject.Find ("Yellow");
+			white = GameObject.Find ("White");
+			blue = GameObject.Find ("Blue");
+			green = GameObject.Find ("Green");
+			red = GameObject.Find ("Red");
+			orange = GameObject.Find ("Orange");
+			currentWall = blue;
+			foreach(Renderer r in orange.GetComponentsInChildren<Renderer>()) {
+				r.material = (Material) Resources.Load("Orange", typeof(Material));
+			}
 		}
 
 	
@@ -59,7 +61,7 @@ public class CubeController : MonoBehaviour
 				while (time <= rotationTime) {
 						transform.rotation = Quaternion.Lerp (initialRotation, finalRotation, time);
 			
-						time += Time.deltaTime;
+						time += Time.deltaTime/2;
 						
 						yield return new WaitForEndOfFrame ();
 				}

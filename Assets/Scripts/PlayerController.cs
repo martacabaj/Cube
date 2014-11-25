@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
 				// Cache the input
 				if (Input.GetButtonDown ("Jump"))
 						jumpFlag = true;
-				Debug.Log (grounded);
+				//Debug.Log (grounded);
 		}
 	
 	
@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
 		//OnCollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider
 		void OnCollisionExit (Collision collision)
 		{
-				Debug.Log ("exit");
+				//Debug.Log ("exit");
 				if (collision.transform == transform.parent)
 						transform.parent = null;
 		}
@@ -118,13 +118,13 @@ public class PlayerController : MonoBehaviour
 		//OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider
 		void OnCollisionStay (Collision col)
 		{
-				Debug.Log ("stay");
+				//Debug.Log ("stay");
 				TrackGrounded (col);
 		}
 		//OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider
 		void OnCollisionEnter (Collision col)
 		{
-				Debug.Log ("enter");
+				//Debug.Log ("enter");
 				TrackGrounded (col);
 		}
 	
