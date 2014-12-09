@@ -124,8 +124,11 @@ public class PlayerController : MonoBehaviour
 		//OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider
 		void OnCollisionEnter (Collision col)
 		{
-				//Debug.Log ("enter");
-				TrackGrounded (col);
+			//Debug.Log ("enter");
+			//if(col.gameObject.name == "Panel")
+			//	Application.LoadLevel("OrangeScene");
+			
+			TrackGrounded (col);
 		}
 	
 	#endregion

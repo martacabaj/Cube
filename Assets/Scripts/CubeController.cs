@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CubeController : MonoBehaviour
 {
-		private float rotationTime = 2.0f;
+		private float rotationTime = 1.0f;
 		private bool isRotating = false;
 		private Quaternion initialRotation;
 		public GameObject yellow, white, blue, green, red, orange;
@@ -11,8 +11,8 @@ public class CubeController : MonoBehaviour
 		// Use this for initialization
 		void Start ()
 		{
-				initialRotation = transform.rotation;
-				GetGameObjects ();
+			initialRotation = transform.rotation;
+			GetGameObjects ();
 		}
 		private void GetGameObjects ()
 		{
@@ -23,8 +23,19 @@ public class CubeController : MonoBehaviour
 			red = GameObject.Find ("Red");
 			orange = GameObject.Find ("Orange");
 			currentWall = blue;
-			foreach(Renderer r in orange.GetComponentsInChildren<Renderer>()) {
+			/*foreach(Renderer r in orange.GetComponentsInChildren<Renderer>()) {
 				r.material = (Material) Resources.Load("Orange", typeof(Material));
+			}*/
+			foreach (Transform t in orange.GetComponentsInChildren<Transform>()) {
+				if(t.renderer == null || (t.gameObject.name != "Cube" && t.gameObject.name != "OrangeWall")) continue;
+				//Rigidbody gameObjectsRigidBody = t.gameObject.AddComponent<Rigidbody>(); // Add the rigidbody.
+				//gameObjectsRigidBody.mass = 5;
+				//gameObjectsRigidBody.useGravity = false;
+				//gameObjectsRigidBody.isKinematic = true;
+				//gameObjectsRigidBody.detectCollisions = true;
+				//gameObjectsRigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+				//if(t.renderer == null || (t.gameObject.name != "Cube" && t.gameObject.name != "OrangeWall")) continue;
+				t.renderer.material = (Material) Resources.Load("Orange", typeof(Material));
 			}
 		}
 
