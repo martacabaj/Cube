@@ -1,11 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Wall.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CubeController.cs">
     <Files>
-      <File FileName="Assets\Scripts\CubeController.cs" Line="30" Column="5" />
-      <File FileName="Assets\Scripts\OrangePanel.cs" Line="36" Column="71" />
-      <File FileName="Assets\Scripts\PlayerController.cs" Line="10" Column="34" />
-      <File FileName="Assets\Scripts\Wall.cs" Line="14" Column="4" />
+      <File FileName="Assets\Scripts\CubeController.cs" Line="29" Column="51" />
+      <File FileName="Assets\Scripts\OrangePanel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Wall.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GoBack.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
