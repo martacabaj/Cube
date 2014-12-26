@@ -39,42 +39,20 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>E:/Programy/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>E:/Programy/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CubeController.cs" />
+     <Compile Include="Assets\Scripts\GoBack.cs" />
+     <Compile Include="Assets\Scripts\OrangePanel.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
-     <Compile Include="Assets\TryOpenCv.cs" />
-     <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
-     <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Basic.shader" />
-     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Multiply.shader" />
-     <None Include="Assets\Standard Assets\Tessellation Shaders\BumpedSpecularSmooth.shader" />
-     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
-     <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
-     <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-BasicOutline.shader" />
-     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Light.shader" />
-     <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
-     <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-LightedOutline.shader" />
-     <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Lighted.shader" />
-     <None Include="Assets\Standard Assets\Tessellation Shaders\BumpedSpecularDisplacement.shader" />
+     <Compile Include="Assets\Scripts\Wall.cs" />
  <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
- </Reference>
- <Reference Include="OpenCvSharp.Blob">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.Blob.dll</HintPath>
- </Reference>
- <Reference Include="OpenCvSharp.CPlusPlus">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.CPlusPlus.dll</HintPath>
- </Reference>
- <Reference Include="OpenCvSharp">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.dll</HintPath>
- </Reference>
- <Reference Include="OpenCvSharp.UserInterface">
- <HintPath>C:/Users/Marta/Documents/CSIT/II/Cube/Assets/OpenCvSharp.UserInterface.dll</HintPath>
+ <HintPath>C:/Users/Okruszon/Desktop/Virtual Environment/cube/Cube/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
