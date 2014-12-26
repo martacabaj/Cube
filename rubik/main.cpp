@@ -13,6 +13,8 @@ using namespace cv;
 int thresh = 50, N = 11;
 const char* wndname = "Square Detection Demo";
 int area;
+int globalCounter;
+Scalar outputColor;
 // helper function:
 // finds a cosine of angle between vectors
 // from pt0->pt1 and from pt0->pt2
@@ -122,12 +124,12 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
             }
             if (counter != 0)
             {
-                final[0]=final[0]/counter;
-                final[1]=final[1]/counter;
-                final[2]=final[2]/counter;
-                final[3]=final[3]/counter;
+                globalCounter++;
+                output[0]=final[0]/counter;
+                output[1]=final[1]/counter;
+                output[2]=final[2]/counter;
+                output[3]=final[3]/counter;
 
-                cout << final << endl ;
             }
         }
     }
@@ -150,6 +152,8 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 //int main( int argc, const char** argv ) //remnant if we will use args at some point
 int main()
 {
+    output={0,0,0,0};
+    globalCounter =0;
     //create capture and if capture is not availible print no camera detected
     CvCapture* capture = 0;
     capture = cvCaptureFromCAM( 0 ); //0=default, -1=any camera, 1..99=your camera
@@ -163,7 +167,7 @@ int main()
     if( capture )
     {
         //for infinity do
-        for(;;)
+        for(int i=0; i<3;i++)
         {
             //show captured image from capture(one frame) in result window
             Mat image = cvQueryFrame( capture );
@@ -176,6 +180,11 @@ int main()
                 cvDestroyWindow("result");
             }
         }
+        output[0] = output[0]/globalCounter;
+        output[1] = output[1]/globalCounter;
+        output[2] = output[2]/globalCounter;
+        output[3] = output[3]/globalCounter;
+        cout << output << endl;
         return 0;
     }
 }
