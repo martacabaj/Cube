@@ -125,10 +125,10 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
             if (counter != 0)
             {
                 globalCounter++;
-                outputColor[0] = final[0] / counter;
-                outputColor[1] = final[1] / counter;
-                outputColor[2] = final[2] / counter;
-                outputColor[3] = final[3] / counter;
+                outputColor[0] += final[0] / counter;
+                outputColor[1] += final[1] / counter;
+                outputColor[2] += final[2] / counter;
+                outputColor[3] += final[3] / counter;
 
             }
         }
