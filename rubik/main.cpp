@@ -149,18 +149,51 @@ static void drawSquares(Mat& image, const vector<vector<Point> >& squares)
     imshow(wndname, image);
 }
 
+int getColor()
+{
+    CvCapture* capture = 0;
+    capture = cvCaptureFromCAM(0); //0=default, -1=any camera, 1..99=your camera
+    if (!capture)
+    {
+        return -1;
+    }
+
+    vector<vector<Point> > squares;
+
+    if (capture)
+    {
+        for (int i = 0; i<3; i++)
+        {
+            Mat image = cvQueryFrame(capture);
+            area = (image.cols*image.rows) / 2;
+            findSquares(image, squares);
+            if (waitKey(10) >= 0){
+                cvReleaseCapture(&capture);
+                cvDestroyWindow(wndname);
+            }
+        }
+        if (globalCounter != 0){
+            outputColor[0] = outputColor[0] / globalCounter;
+            outputColor[1] = outputColor[1] / globalCounter;
+            outputColor[2] = outputColor[2] / globalCounter;
+            outputColor[3] = outputColor[3] / globalCounter;
+        }
+    }
+    return 0;
+}
+
 //int main( int argc, const char** argv ) //remnant if we will use args at some point
 int main()
 {
-    outputColor = { 0, 0, 0, 0 };
-    globalCounter = 0;
+    //outputColor = { 0, 0, 0, 0 };
+    //globalCounter = 0;
     //create capture and if capture is not availible print no camera detected
     CvCapture* capture = 0;
     capture = cvCaptureFromCAM(0); //0=default, -1=any camera, 1..99=your camera
     if (!capture) cout << "No camera detected" << endl;
 
     //created named window that will autosize to size of camera capture
-    
+
     vector<vector<Point> > squares;
 
     //start capture in loop if possible
@@ -187,7 +220,7 @@ int main()
             outputColor[3] = outputColor[3] / globalCounter;
             cout << outputColor << endl;
         }
-        
+
         return 0;
     }
 }
