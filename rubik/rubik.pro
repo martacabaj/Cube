@@ -8,11 +8,11 @@ QT       += core
 QT       -= gui
 
 TARGET = rubik
-CONFIG   += console
-CONFIG   -= app_bundle
+# CONFIG   += console
+# CONFIG   -= app_bundle
 
-TEMPLATE = app
-
+TEMPLATE = lib
+CONFIG   += staticib
 
 SOURCES += main.cpp
 
