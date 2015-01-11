@@ -118,17 +118,17 @@ public class PlayerController : MonoBehaviour
 		//OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider
 		void OnCollisionStay (Collision col)
 		{
-				//Debug.Log ("stay");
+			
 				TrackGrounded (col);
 		}
 		//OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider
 		void OnCollisionEnter (Collision col)
 		{
-			//Debug.Log ("enter");
-			//if(col.gameObject.name == "Panel")
-			//	Application.LoadLevel("OrangeScene");
+	
+				//if(col.gameObject.name == "Panel")
+				//	Application.LoadLevel("OrangeScene");
 			
-			TrackGrounded (col);
+				TrackGrounded (col);
 		}
 	
 	#endregion
@@ -169,14 +169,21 @@ public class PlayerController : MonoBehaviour
 				var maxHeight = capsule.bounds.min.y + capsule.radius * .9f;
 				foreach (var contact in collision.contacts) {
 						if (contact.point.y < maxHeight) {
+							
 								if (isKinematic (collision)) {
+										Debug.Log ("1");
 										// Get the ground velocity and we parent to it
+								
 										groundVelocity = collision.rigidbody.velocity;
 										transform.parent = collision.transform;
+									
 								} else if (isStatic (collision)) {
+										Debug.Log ("2");
 										// Just parent to it since it's static
 										transform.parent = collision.transform;
+									
 								} else {
+									
 										// We are standing over a dinamic object,
 										// set the groundVelocity to Zero to avoid jiggers and extreme accelerations
 										groundVelocity = Vector3.zero;
@@ -184,6 +191,12 @@ public class PlayerController : MonoBehaviour
 				
 								
 								grounded = true;
+						} else {
+						
+
+								transform.rotation = Quaternion.identity;
+									
+									
 						}
 			
 						break;
