@@ -6,7 +6,7 @@ using System.Threading;
 
 public class CubeController : MonoBehaviour
 {
-		[DllImport ("kurwadzialaj")]
+		[DllImport ("rubik3")]
 		private static extern int getColor ();
 		private float
 				rotationTime = 1.0f;
@@ -14,6 +14,8 @@ public class CubeController : MonoBehaviour
 		private Quaternion initialRotation;
 		public GameObject yellowFloor, whiteFloor, blueFloor, greenFloor, redFloor, orangeFloor;
 		public GameObject currentWall;
+		private const int samplingMax = 150;
+		private int samplingTime = 0;
 		// Use this for initialization
 		void Start ()
 		{
@@ -23,15 +25,20 @@ public class CubeController : MonoBehaviour
 		void Awake ()
 		{
 				//new MyPluginsClass ();
-				Thread thread = new Thread (new ThreadStart (ColorThread));
-				thread.Start ();
+				
+			//	Thread thread = new Thread (new ThreadStart (ColorThread));
+				//thread.Start ();
 		}
 		public void ColorThread ()
 		{
-				Debug.Log (getColor ());
+			
+				Debug.Log (getColor());
+
 		}
 		private void GetGameObjects ()
 		{
+				
+
 				yellowFloor = GameObject.Find ("Yellow/Floor");
 				whiteFloor = GameObject.Find ("White/Floor");
 				blueFloor = GameObject.Find ("Blue/Floor");
@@ -48,6 +55,15 @@ public class CubeController : MonoBehaviour
 		// Update is called once per frame
 		void Update ()
 		{
+				
+				samplingTime++;
+		
+				if (samplingTime == samplingMax) {
+					//	Debug.Log ("call");
+					//	//Thread thread = new Thread (new ThreadStart (ColorThread));
+						//thread.Start ();
+						samplingTime = 0;
+				}
 				if (isRotating)
 						return;
 				if (Input.GetKeyDown (KeyCode.Y)) {

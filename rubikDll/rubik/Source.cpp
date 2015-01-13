@@ -3,7 +3,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/background_segm.hpp>
-
+#include <vector>
+#include <algorithm>
 using namespace cv;
 
 
@@ -23,6 +24,57 @@ static double angle(Point pt1, Point pt2, Point pt0)
 	return (dx1*dx2 + dy1*dy2) / sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
+static int checkRange(){
+	std::vector<double> colors = { outputColor[2], outputColor[1], outputColor[0] };
+	int max = 0;
+	int min = 0;
+	for (size_t i = 0; i < colors.size(); i++){
+		if (colors[max] < colors[i]){
+			max = i;
+		}
+		if (colors[min] > colors[i]){
+			min = i;
+		}
+	}
+
+	if ((colors[min] / colors[max]) > 0.75){
+		
+		return 0; //white
+	}
+	switch (max){
+	case 2:
+	
+		return 5; //blue
+		break;
+	case 1:
+	 if ((colors[0] / colors[1]) > 0.75){
+			
+			return 3;//yellow
+		}
+		else{
+			return 4; //green
+		}
+		break;
+	case 0:
+		if ((colors[1] / colors[0]) < 0.30){
+			
+			return 1; //red
+
+		}
+		else if ((colors[1] / colors[0]) > 0.75){
+		
+			return 3; //yellow
+		}
+		else{
+		
+			return 2; //orange
+		}
+		break;
+	}
+	return -1;
+
+
+}
 // returns sequence of squares detected on the image.
 // the sequence is stored in the specified memory storage
 static void findSquares(const Mat& image, vector<vector<Point> >& squares)
@@ -112,7 +164,7 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
 			}
 
 			Scalar final;
-			for (int i = 0; i<mean_colors.size(); i++){
+			for (size_t i = 0; i<mean_colors.size(); i++){
 				final[0] += mean_colors.at(i)[0];
 				final[1] += mean_colors.at(i)[1];
 				final[2] += mean_colors.at(i)[2];
@@ -148,7 +200,7 @@ __declspec(dllexport) int getColor()
 
 	if (capture)
 	{
-		for (int i = 0; i<3; i++)
+		for (int i = 0; i<6; i++)
 		{
 			Mat image = cvQueryFrame(capture);
 			area = (image.cols*image.rows) / 2;
@@ -164,7 +216,9 @@ __declspec(dllexport) int getColor()
 			outputColor[1] = outputColor[1] / globalCounter;
 			outputColor[2] = outputColor[2] / globalCounter;
 			outputColor[3] = outputColor[3] / globalCounter;
+	
+			return checkRange();
 		}
 	}
-	return 0;
+	return -1;
 }

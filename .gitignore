@@ -7,3 +7,10 @@ packages/
 build-rubik-Desktop_Qt_5_4_0_MSVC2013_64bit-Debug/Makefile
 build-rubik-Desktop_Qt_5_4_0_MSVC2013_64bit-Debug/
 rubik/rubik.pro.user.f62a617.3.3-pre1
+Assets/Plugins/rubik.dll.meta
+rubikDll/rubik/Debug/
+Assets/Materials/CubeMaterial.physicMaterial.meta
+Assets/Plugins/kurwa.dll
+Assets/Plugins/kurwa.dll.meta
+rubikDll/rubik/Release/rubik.tlog/
+rubikDll/rubik/Release/

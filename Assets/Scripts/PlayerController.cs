@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
 public class PlayerController : MonoBehaviour
 {
+	[DllImport ("rubik")]
+	private static extern int getColor ();
 	#region Variables (private)
 	
 		private bool grounded = false;
@@ -33,6 +37,9 @@ public class PlayerController : MonoBehaviour
 		public bool canRunSidestep = true;
 		public bool canJump = true;
 		public bool canRun = true;
+		private Dictionary <int, GameObject> colorFloorMap;
+		static int color = -1;
+			GameObject lookAt;
 	
 	#endregion
 	
@@ -48,15 +55,35 @@ public class PlayerController : MonoBehaviour
 				//Stops the Rigidbody rotating around the world X, Y and Z axes selectively
 				rigidbody.freezeRotation = true;
 				rigidbody.useGravity = true;
+
+							
+		}
+
+
+		
+		public void ColorThread ()
+		{
+				color = getColor();
+				Debug.Log (color);
+				
 		}
 		/// <summary>
 		/// Use this for initialization
 		/// </summary>
 		void Start ()
 		{
-		
+			colorFloorMap = new Dictionary<int, GameObject>();
+			colorFloorMap.Add(0, GameObject.Find ("White/Floor"));
+			colorFloorMap.Add(1, GameObject.Find ("Red/Floor"));
+			colorFloorMap.Add(2, GameObject.Find ("Orange/Floor"));
+			colorFloorMap.Add(3, GameObject.Find ("Yellow/Floor"));
+			colorFloorMap.Add(4, GameObject.Find ("Green/Floor"));
+			colorFloorMap.Add(5, GameObject.Find ("Blue/Floor"));
+			lookAt = new GameObject();
+
 		}
-	
+	private const int samplingMax = 150;
+		private int samplingTime = 0;
 		/// <summary>
 		/// Update is called once per frame
 		/// </summary>
@@ -65,10 +92,19 @@ public class PlayerController : MonoBehaviour
 				// Cache the input
 				if (Input.GetButtonDown ("Jump"))
 						jumpFlag = true;
+
+				samplingTime++;
+		
+				if (samplingTime == samplingMax) {
+					//	Debug.Log ("call");
+						Thread thread = new Thread (new ThreadStart (ColorThread));
+						thread.Start ();
+						samplingTime = 0;
+				}
 				//Debug.Log (grounded);
 		}
 	
-	
+
 		/// <summary>
 		/// Update for physics
 		/// This function is called every fixed framerate frame
@@ -76,9 +112,17 @@ public class PlayerController : MonoBehaviour
 		/// </summary>
 		void FixedUpdate ()
 		{
+if(color!=-1){
+
+
+	Camera.main.transform.LookAt(colorFloorMap[color].transform);
+
+				//	Rotating(45f, 0f);
 				// Cache de input
 				//Vector3(left/right, up/down, forward/back)
-				var inputVector = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
+
+				var inputVector = new Vector3 (Input.GetAxis ("Horizontal"), 0, 0.3f);
+
 		
 				// On the ground
 				if (grounded) {
@@ -103,6 +147,7 @@ public class PlayerController : MonoBehaviour
 						var velocityChange = Camera.main.transform.TransformDirection (inputVector) * inAirControl;
 						rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 				}
+			}
 		}
 	
 		// Unparent if we are no longer standing on our parent
@@ -222,6 +267,22 @@ public class PlayerController : MonoBehaviour
 		{
 				return transform.gameObject.isStatic;
 		}
+		public float turnSmoothing = 15f; 
+		public void Rotating (float horizontal, float vertical)
+    	{
+	        // Create a new vector of the horizontal and vertical inputs.
+	        Vector3 targetDirection = new Vector3(horizontal, 0f, vertical);
+        
+	        // Create a rotation based on this new vector assuming that up is the global y axis.
+	        Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+	        
+	        // Create a rotation that is an increment closer to the target rotation from the player's rotation.
+	        Quaternion newRotation = Quaternion.Lerp(rigidbody.rotation, targetRotation, turnSmoothing * Time.deltaTime);
+	        Debug.Log("rot");
+	        // Change the players rotation to this new rotation.
+	        transform.rigidbody.MoveRotation(newRotation);
+    }
+    
 	
 	#endregion
 }
