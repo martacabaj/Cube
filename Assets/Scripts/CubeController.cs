@@ -6,16 +6,15 @@ using System.Threading;
 
 public class CubeController : MonoBehaviour
 {
-		[DllImport ("rubik3")]
-		private static extern int getColor ();
-		private float
-				rotationTime = 1.0f;
-		private bool isRotating = false;
+	
+	//	private float
+	//			rotationTime = 1.0f;
+	//	private bool isRotating = false;
 		private Quaternion initialRotation;
 		public GameObject yellowFloor, whiteFloor, blueFloor, greenFloor, redFloor, orangeFloor;
 		public GameObject currentWall;
-		private const int samplingMax = 150;
-		private int samplingTime = 0;
+		//private const int samplingMax = 150;
+	//	private int samplingTime = 0;
 		// Use this for initialization
 		void Start ()
 		{
@@ -24,17 +23,9 @@ public class CubeController : MonoBehaviour
 		}
 		void Awake ()
 		{
-				//new MyPluginsClass ();
 				
-			//	Thread thread = new Thread (new ThreadStart (ColorThread));
-				//thread.Start ();
 		}
-		public void ColorThread ()
-		{
-			
-				Debug.Log (getColor());
-
-		}
+	
 		private void GetGameObjects ()
 		{
 				
@@ -56,15 +47,8 @@ public class CubeController : MonoBehaviour
 		void Update ()
 		{
 				
-				samplingTime++;
-		
-				if (samplingTime == samplingMax) {
-					//	Debug.Log ("call");
-					//	//Thread thread = new Thread (new ThreadStart (ColorThread));
-						//thread.Start ();
-						samplingTime = 0;
-				}
-				if (isRotating)
+				
+			/*	if (isRotating)
 						return;
 				if (Input.GetKeyDown (KeyCode.Y)) {
 						StartCoroutine (SmoothRotation (yellowFloor));
@@ -77,11 +61,14 @@ public class CubeController : MonoBehaviour
 				} else if (Input.GetKeyDown (KeyCode.R)) {
 						StartCoroutine (SmoothRotation (redFloor));
 				} else if (Input.GetKeyDown (KeyCode.O)) {
-						StartCoroutine (SmoothRotation (orangeFloor));
-				}
+						StartRotation(orangeFloor);
+				}*/
 		}
-
-		IEnumerator SmoothRotation (GameObject dest)
+    /*    public void StartRotation(GameObject wall)
+        {
+            StartCoroutine(SmoothRotation(wall));
+        }
+		public IEnumerator SmoothRotation (GameObject dest)
 		{
 				isRotating = true;
 				
@@ -96,7 +83,7 @@ public class CubeController : MonoBehaviour
 				transform.rotation = initialRotation = finalRotation;
 				currentWall = dest;
 				isRotating = false;
-		}
+		}*/
 
 		void SetWallProperties (GameObject wall, string resourceName)
 		{
