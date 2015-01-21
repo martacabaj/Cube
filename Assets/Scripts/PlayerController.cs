@@ -41,8 +41,7 @@ public class PlayerController : MonoBehaviour
     public bool canRun = true;
     private Dictionary<int, GameObject> colorFloorMap;
     static int color = -1;
-    private static colorBeforeChange = -1;
-    private static bool change=false;
+    
     private Thread colorThread;
     private bool continueColorSampling = true;
     private float
@@ -78,7 +77,7 @@ public class PlayerController : MonoBehaviour
     public void ColorThread(EventHandler onThreadStop)
     {
         color = getColor();
-       
+  
         Debug.Log(color);
         OnThreadStop(null, EventArgs.Empty);
 
@@ -176,7 +175,7 @@ public class PlayerController : MonoBehaviour
             // Cache de input
             //Vector3(left/right, up/down, forward/back)
 
-            var inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, 0.3f);
+            var inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, 0.5f);
 
 
             // On the ground

@@ -1,0 +1,6 @@
+diff a/.gitignore b/.gitignore	(rejected hunks)
+@@ -4,3 +4,4 @@
+ Library/
+ packages/
+ /Temp
++Assets/Scripts/Wall.cs.meta
