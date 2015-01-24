@@ -33,6 +33,21 @@ public class CubeController : MonoBehaviour
 				//states from walls goes as orange, blue, gree, white, yellow, red
 				int[] minigamesStateTmp = {0,0,0,0,0,0};
 				minigamesState = minigamesStateTmp;
+				GameObject.Find("Orange/PanelWallContainer/PanelWall/New Sprite").SetActive(false);
+				GameObject.Find("Red/PanelWallContainer/PanelWall/New Sprite").SetActive(false);
+				GameObject.Find("White/PanelWallContainer/PanelWall/New Sprite").SetActive(false);
+				GameObject.Find("Yellow/PanelWallContainer/PanelWall/New Sprite").SetActive(false);
+				GameObject.Find ("Green/PanelWallContainer/PanelWall/New Sprite").SetActive (false);
+		GameObject.Find("Orange/PanelWallContainer/PanelWall/vtext").SetActive(false);
+		GameObject.Find("Red/PanelWallContainer/PanelWall/vtext").SetActive(false);
+		GameObject.Find("White/PanelWallContainer/PanelWall/vtext").SetActive(false);
+		GameObject.Find("Yellow/PanelWallContainer/PanelWall/vtext").SetActive(false);
+		GameObject.Find ("Green/PanelWallContainer/PanelWall/vtext").SetActive (false);
+		GameObject.Find("Orange/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+		GameObject.Find("Red/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+		GameObject.Find("White/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+		GameObject.Find("Yellow/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+		GameObject.Find ("Green/PanelWallContainer/PanelWall/bckgrn").SetActive (false);
 		}
 		void Awake ()
 		{
@@ -153,6 +168,12 @@ public class CubeController : MonoBehaviour
 			moveWalls = true;
 
 		} else {
+			//states from walls goes as orange, blue, gree, white, yellow, red
+			if(minigamesState[0]==1){GameObject.Find ("Orange/PanelWallContainer/PanelWall").SetActiveRecursively(true);}
+			if(minigamesState[2]==1){GameObject.Find ("Green/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
+			if(minigamesState[3]==1){GameObject.Find ("White/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
+			if(minigamesState[4]==1){GameObject.Find ("Yellow/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
+			if(minigamesState[5]==1){GameObject.Find ("Red/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
 			Debug.Log("Not yet");
 		}
 	}

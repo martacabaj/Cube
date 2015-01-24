@@ -4,7 +4,7 @@ using System.Linq;
 
 public class BluePanelController : MonoBehaviour {
 	int[] choices = {2,0,3,0,1};
-	int[] shouldBe = {0,0,0,0,0};
+	int[] shouldBe = {3,2,3,4,1};
 	int chosenPanel = 1;//1-5
 	bool canUse = true;
 	
@@ -153,7 +153,6 @@ public class BluePanelController : MonoBehaviour {
 	void checkVictory(){
 		if(choices.SequenceEqual(shouldBe)){
 			canUse=false;
-			
 			GameObject.Find("CubeGlobal").GetComponent<CubeController>().minigamesState[1]= 1;
 			GameObject.Find("CubeGlobal").GetComponent<CubeController>().checkIfGameWasWon();
 		}

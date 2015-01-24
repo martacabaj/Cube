@@ -4,7 +4,7 @@ using System.Linq;
 
 public class WhitePanelController : MonoBehaviour {
 	int[] choices = {2,0,3,0,1};
-	int[] shouldBe = {0,0,0,0,0};
+	int[] shouldBe = {1,2,1,2,2};
 	int chosenPanel = 1;//1-5
 	bool canUse = true;
 	
@@ -156,6 +156,14 @@ public class WhitePanelController : MonoBehaviour {
 			
 			GameObject.Find("CubeGlobal").GetComponent<CubeController>().minigamesState[3]= 1;
 			GameObject.Find("CubeGlobal").GetComponent<CubeController>().checkIfGameWasWon();
+			GameObject.Find("White/PanelWallContainer/Panel").SetActiveRecursively(false);
+
+			GameObject.Find("VerticalPanelWL1").SetActive(false);
+			GameObject.Find("VerticalPanelWL2").SetActive(false);
+			GameObject.Find("VerticalPanelWL3").SetActive(false);
+			GameObject.Find("VerticalPanelWL4").SetActive(false);
+			GameObject.Find("VerticalPanelWL5").SetActive(false);
+			GameObject.Find("textL").SetActiveRecursively(true);
 		}
 	}
 }
