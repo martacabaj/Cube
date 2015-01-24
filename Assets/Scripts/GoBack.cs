@@ -16,6 +16,7 @@ public class GoBack : MonoBehaviour {
 	void OnMouseDown() {
 		Debug.Log ("go back");
 		Destroy(GameObject.Find("Root"));
+		Destroy(GameObject.Find("Canvas"));
 		//Application.LoadLevel (Application.loadedLevel("Cube"));
 	}
 }
