@@ -10,25 +10,26 @@ public class OrangePanelController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[0];
 		setColors ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (canUse) {
-						if (Input.GetKeyDown (KeyCode.W) == true) {
-								goUp ();
-						}
-						if (Input.GetKeyDown (KeyCode.S) == true) {
-								goDown ();
-						} 
-						if (Input.GetKeyDown (KeyCode.A) == true) {
-								goLeft ();
-						}
-						if (Input.GetKeyDown (KeyCode.D) == true) {
-								goRight ();
-						}
-				}
+			if (Input.GetKeyDown (KeyCode.W) == true) {
+				goUp ();
+			}
+			if (Input.GetKeyDown (KeyCode.S) == true) {
+				goDown ();
+			} 
+			if (Input.GetKeyDown (KeyCode.A) == true) {
+				goLeft ();
+			}
+			if (Input.GetKeyDown (KeyCode.D) == true) {
+				goRight ();
+			}
+		}
 	
 	}
 
@@ -151,6 +152,7 @@ public class OrangePanelController : MonoBehaviour {
 	}
 
 	void checkVictory(){
+		GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[0] = choices;
 		if(choices.SequenceEqual(shouldBe)){
 			canUse=false;
 

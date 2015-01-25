@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\ApplicationModel.cs" />
      <Compile Include="Assets\Scripts\BluePanel.cs" />
      <Compile Include="Assets\Scripts\BluePanelController.cs" />
      <Compile Include="Assets\Scripts\BlueWall.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\Scripts\YellowPanel.cs" />
      <Compile Include="Assets\Scripts\YellowPanelController.cs" />
      <Compile Include="Assets\Scripts\YellowWall.cs" />
+     <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\NewComputeShader.compute" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>

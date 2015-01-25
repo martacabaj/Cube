@@ -10,6 +10,7 @@ public class BluePanelController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[1];
 		setColors ();
 	}
 	
@@ -151,10 +152,20 @@ public class BluePanelController : MonoBehaviour {
 	}
 	
 	void checkVictory(){
+		GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[1] = choices;
 		if(choices.SequenceEqual(shouldBe)){
 			canUse=false;
+
 			GameObject.Find("CubeGlobal").GetComponent<CubeController>().minigamesState[1]= 1;
 			GameObject.Find("CubeGlobal").GetComponent<CubeController>().checkIfGameWasWon();
+			GameObject.Find("Blue/PanelWallContainer/Panel").SetActiveRecursively(false);
+
+			GameObject.Find("VerticalPanelBL1").SetActive(false);
+			GameObject.Find("VerticalPanelBL2").SetActive(false);
+			GameObject.Find("VerticalPanelBL3").SetActive(false);
+			GameObject.Find("VerticalPanelBL4").SetActive(false);
+			GameObject.Find("VerticalPanelBL5").SetActive(false);
+			GameObject.Find("textL").SetActiveRecursively(true);
 		}
 	}
 }

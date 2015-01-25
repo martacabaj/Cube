@@ -10,6 +10,7 @@ public class RedPanelController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[5];
 		setColors ();
 	}
 	
@@ -151,6 +152,7 @@ public class RedPanelController : MonoBehaviour {
 	}
 	
 	void checkVictory(){
+		GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[5] = choices;
 		if(choices.SequenceEqual(shouldBe)){
 			canUse=false;
 			

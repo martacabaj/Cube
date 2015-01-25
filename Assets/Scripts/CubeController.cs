@@ -7,27 +7,37 @@ using System.Linq;
 
 public class CubeController : MonoBehaviour
 {
-	
-		private float
-				rotationTime = 1.0f;
+		public bool smallSceneLoaded = false;
+		private float rotationTime = 1.0f;
 		private bool isRotating = false;
 		private Quaternion initialRotation;
 		public GameObject yellowFloor, whiteFloor, blueFloor, greenFloor, redFloor, orangeFloor;
 		public GameObject currentWall;
-		public  int[] minigamesState;
-		public  int[] victoryState = {1,1,1,1,1,1};
+		public int[][] choices = new int[6][];
+		public int[] minigamesState;
+		public int[] victoryState = {1,1,1,1,1,1};
 		Vector3 positionW = new Vector3(10000, 0, 0);
-		Vector3 positionY = new Vector3(-10000, 0, 0);
-		Vector3 positionR = new Vector3(0, 0, 10000);
-		Vector3 positionO = new Vector3(0, 0, -10000);
-		Vector3 positionG = new Vector3(0, 10000, 0);
-		Vector3 positionB = new Vector3(0, -10000, 0);
+		//Vector3 positionY = new Vector3(-10000, 0, 0);
+		//Vector3 positionR = new Vector3(0, 0, 10000);
+		//Vector3 positionO = new Vector3(0, 0, -10000);
+		//Vector3 positionG = new Vector3(0, 10000, 0);
+		//Vector3 positionB = new Vector3(0, -10000, 0);
 		bool moveWalls = false;
 		//private const int samplingMax = 150;
 	//	private int samplingTime = 0;
 		// Use this for initialization
 		void Start ()
 		{
+			
+			choices = new int[6][];
+			for(int i=0; i<6; i++) {
+				choices[i] = new int[5];
+				choices[i][0] = 2;
+				choices[i][1] = 0;
+				choices[i][2] = 3;
+				choices[i][3] = 0;
+				choices[i][4] = 1;//{2,0,3,0,1};
+			}
 				initialRotation = transform.rotation;
 				GetGameObjects ();
 				//states from walls goes as orange, blue, gree, white, yellow, red
@@ -38,16 +48,21 @@ public class CubeController : MonoBehaviour
 				GameObject.Find("White/PanelWallContainer/PanelWall/New Sprite").SetActive(false);
 				GameObject.Find("Yellow/PanelWallContainer/PanelWall/New Sprite").SetActive(false);
 				GameObject.Find ("Green/PanelWallContainer/PanelWall/New Sprite").SetActive (false);
-		GameObject.Find("Orange/PanelWallContainer/PanelWall/vtext").SetActive(false);
-		GameObject.Find("Red/PanelWallContainer/PanelWall/vtext").SetActive(false);
-		GameObject.Find("White/PanelWallContainer/PanelWall/vtext").SetActive(false);
-		GameObject.Find("Yellow/PanelWallContainer/PanelWall/vtext").SetActive(false);
-		GameObject.Find ("Green/PanelWallContainer/PanelWall/vtext").SetActive (false);
-		GameObject.Find("Orange/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
-		GameObject.Find("Red/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
-		GameObject.Find("White/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
-		GameObject.Find("Yellow/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
-		GameObject.Find ("Green/PanelWallContainer/PanelWall/bckgrn").SetActive (false);
+				GameObject.Find ("Blue/PanelWallContainer/PanelWall/New Sprite").SetActive (false);
+
+				GameObject.Find("Orange/PanelWallContainer/PanelWall/vtext").SetActive(false);
+				GameObject.Find("Red/PanelWallContainer/PanelWall/vtext").SetActive(false);
+				GameObject.Find("White/PanelWallContainer/PanelWall/vtext").SetActive(false);
+				GameObject.Find("Yellow/PanelWallContainer/PanelWall/vtext").SetActive(false);
+				GameObject.Find ("Green/PanelWallContainer/PanelWall/vtext").SetActive (false);
+				GameObject.Find ("Blue/PanelWallContainer/PanelWall/vtext").SetActive (false);
+				
+				GameObject.Find("Orange/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+				GameObject.Find("Red/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+				GameObject.Find("White/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+				GameObject.Find("Yellow/PanelWallContainer/PanelWall/bckgrn").SetActive(false);
+				GameObject.Find ("Green/PanelWallContainer/PanelWall/bckgrn").SetActive (false);
+				GameObject.Find ("Blue/PanelWallContainer/PanelWall/bckgrn").SetActive (false);
 		}
 		void Awake ()
 		{
@@ -57,7 +72,6 @@ public class CubeController : MonoBehaviour
 		private void GetGameObjects ()
 		{
 				
-
 				yellowFloor = GameObject.Find ("Yellow/Floor");
 				whiteFloor = GameObject.Find ("White/Floor");
 				blueFloor = GameObject.Find ("Blue/Floor");
@@ -80,50 +94,52 @@ public class CubeController : MonoBehaviour
 				
 				
 			    if (isRotating)
-						return;
+					return;
 				if (Input.GetKeyDown (KeyCode.Y)) {
-						StartCoroutine (SmoothRotation (yellowFloor));
+					StartCoroutine (SmoothRotation (yellowFloor));
 				} else if (Input.GetKeyDown (KeyCode.Q)) {
-						StartCoroutine (SmoothRotation (whiteFloor));
+					StartCoroutine (SmoothRotation (whiteFloor));
 				} else if (Input.GetKeyDown (KeyCode.B)) {
-						StartCoroutine (SmoothRotation (blueFloor));
+					StartCoroutine (SmoothRotation (blueFloor));
 				} else if (Input.GetKeyDown (KeyCode.G)) {
-						StartCoroutine (SmoothRotation (greenFloor));
+					StartCoroutine (SmoothRotation (greenFloor));
 				} else if (Input.GetKeyDown (KeyCode.R)) {
-						StartCoroutine (SmoothRotation (redFloor));
+					StartCoroutine (SmoothRotation (redFloor));
 				} else if (Input.GetKeyDown (KeyCode.O)) {
-						StartRotation(orangeFloor);
+					StartRotation(orangeFloor);
 				}
 
 				if (moveWalls) {
 					float speed = 3.0f * Time.deltaTime;
 					foreach(GameObject go in GameObject.FindGameObjectsWithTag("white_wall") ){
-						go.transform.position = Vector3.MoveTowards(go.transform.position, positionW, speed);
+						go.transform.position = Vector3.MoveTowards(go.transform.position, whiteFloor.transform.position*10000, speed);// positionW, speed);
 					}
-			foreach(GameObject go in GameObject.FindGameObjectsWithTag("orange_wall") ){
-				go.transform.position = Vector3.MoveTowards(go.transform.position, positionO, speed);
-			}
-			foreach(GameObject go in GameObject.FindGameObjectsWithTag("green_wall") ){
-				go.transform.position = Vector3.MoveTowards(go.transform.position, positionG, speed);
-			}
-			foreach(GameObject go in GameObject.FindGameObjectsWithTag("blue_wall") ){
-				go.transform.position = Vector3.MoveTowards(go.transform.position, positionB, speed);
-			}
-			foreach(GameObject go in GameObject.FindGameObjectsWithTag("yellow_wall") ){
-				go.transform.position = Vector3.MoveTowards(go.transform.position, positionY, speed);
-			}
-			foreach(GameObject go in GameObject.FindGameObjectsWithTag("red_wall") ){
-				go.transform.position = Vector3.MoveTowards(go.transform.position, positionR, speed);
-			}
-			if(positionW.Equals(GameObject.Find("White/Floor").transform.position)){
+					foreach(GameObject go in GameObject.FindGameObjectsWithTag("orange_wall") ){
+						go.transform.position = Vector3.MoveTowards(go.transform.position, orangeFloor.transform.position*10000, speed);
+					}
+					foreach(GameObject go in GameObject.FindGameObjectsWithTag("green_wall") ){
+						go.transform.position = Vector3.MoveTowards(go.transform.position, greenFloor.transform.position*10000, speed);
+					}
+					foreach(GameObject go in GameObject.FindGameObjectsWithTag("blue_wall") ){
+						go.transform.position = Vector3.MoveTowards(go.transform.position, blueFloor.transform.position*10000, speed);
+					}
+					foreach(GameObject go in GameObject.FindGameObjectsWithTag("yellow_wall") ){
+						go.transform.position = Vector3.MoveTowards(go.transform.position, yellowFloor.transform.position*10000, speed);
+					}
+					foreach(GameObject go in GameObject.FindGameObjectsWithTag("red_wall") ){
+						go.transform.position = Vector3.MoveTowards(go.transform.position, redFloor.transform.position*10000, speed);
+					}
+					if(positionW.Equals(GameObject.Find("White/Floor").transform.position)){
 						moveWalls = false;
 					}
 				}
 		}
+        
         public void StartRotation(GameObject wall)
         {
             StartCoroutine(SmoothRotation(wall));
         }
+
 		public IEnumerator SmoothRotation (GameObject dest)
 		{
 				isRotating = true;
@@ -170,6 +186,7 @@ public class CubeController : MonoBehaviour
 		} else {
 			//states from walls goes as orange, blue, gree, white, yellow, red
 			if(minigamesState[0]==1){GameObject.Find ("Orange/PanelWallContainer/PanelWall").SetActiveRecursively(true);}
+			if(minigamesState[1]==1){GameObject.Find ("Blue/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
 			if(minigamesState[2]==1){GameObject.Find ("Green/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
 			if(minigamesState[3]==1){GameObject.Find ("White/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
 			if(minigamesState[4]==1){GameObject.Find ("Yellow/PanelWallContainer/PanelWall").SetActiveRecursively (true);}
