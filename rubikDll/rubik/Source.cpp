@@ -2,7 +2,6 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/video/background_segm.hpp>
 #include <vector>
 #include <algorithm>
 using namespace cv;
@@ -12,6 +11,9 @@ int thresh = 50, N = 11;
 int area;
 int globalCounter;
 Scalar outputColor;
+bool stopFlag=false;
+int color;
+VideoCapture cap;
 // helper function:
 // finds a cosine of angle between vectors
 // from pt0->pt1 and from pt0->pt2
@@ -37,7 +39,7 @@ static int checkRange(){
 		}
 	}
 
-	if ((colors[min] / colors[max]) > 0.75){
+	if ((colors[min] / colors[max]) > 0.70 || (max == 2 && colors[1] / colors[max]>0.7)){
 		
 		return 0; //white
 	}
@@ -47,23 +49,19 @@ static int checkRange(){
 		return 5; //blue
 		break;
 	case 1:
-	 if ((colors[0] / colors[1]) > 0.75){
+	 if ((colors[0] / colors[1]) > 0.70){
 			
-			return 3;//yellow
+		 return 3;//yellow
 		}
 		else{
 			return 4; //green
 		}
 		break;
 	case 0:
-		if ((colors[1] / colors[0]) < 0.30){
+		if ((colors[1] / colors[0]) < 0.60){
 			
 			return 1; //red
 
-		}
-		else if ((colors[1] / colors[0]) > 0.75){
-		
-			return 3; //yellow
 		}
 		else{
 		
@@ -72,7 +70,6 @@ static int checkRange(){
 		break;
 	}
 	return -1;
-
 
 }
 // returns sequence of squares detected on the image.
@@ -87,7 +84,7 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
 	pyrDown(image, pyr, Size(image.cols / 2, image.rows / 2));
 	pyrUp(pyr, timg, image.size());
 	vector<vector<Point> > contours;
-
+	
 	// find squares in every color plane of the image
 	for (int c = 0; c < 3; c++)
 	{
@@ -129,7 +126,7 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
 				// approximate contour with accuracy proportional
 				// to the contour perimeter
 				approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
-
+				
 				// square contours should have 4 vertices after approximation
 				// relatively large area (to filter out noisy contours)
 				// and be convex.
@@ -161,17 +158,19 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
 						counter++;
 					}
 				}
+				
 			}
-
+			
 			Scalar final;
+			if (counter != 0){
 			for (size_t i = 0; i<mean_colors.size(); i++){
 				final[0] += mean_colors.at(i)[0];
 				final[1] += mean_colors.at(i)[1];
 				final[2] += mean_colors.at(i)[2];
 				final[3] += mean_colors.at(i)[3];
+				
 			}
-			if (counter != 0)
-			{
+		
 				globalCounter++;
 				outputColor[0] += final[0] / counter;
 				outputColor[1] += final[1] / counter;
@@ -181,44 +180,68 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
 			}
 		}
 	}
+	
 }
 
 
 // the function draws all the squares in the image
 
-
-__declspec(dllexport) int getColor()
+__declspec(dllexport) void start()
 {
-	CvCapture* capture = 0;
-	capture = cvCaptureFromCAM(0); //0=default, -1=any camera, 1..99=your camera
-	if (!capture)
+	stopFlag = false;
+
+	cap = VideoCapture(0);
+	if (!cap.isOpened())
 	{
-		return -1;
+		color = -1;
 	}
-
 	vector<vector<Point> > squares;
-
-	if (capture)
+	for (;;)
 	{
-		for (int i = 0; i<6; i++)
-		{
-			Mat image = cvQueryFrame(capture);
-			area = (image.cols*image.rows) / 2;
-			findSquares(image, squares);
-			
-				
-			
+		if (stopFlag){
+			cap.release();
+			break;
 		}
-		cvReleaseCapture(&capture);
+		for (int i = 0; i<3; i++)
+		{
+			try{
+				Mat image;
+				cap >> image;
+
+				area = (image.cols*image.rows) / 10;
+				
+				findSquares(image, squares);
+
+			}
+			catch (Exception e){
+				color = -2;
+			}
+
+
+		}
+
 
 		if (globalCounter != 0){
+			
 			outputColor[0] = outputColor[0] / globalCounter;
 			outputColor[1] = outputColor[1] / globalCounter;
 			outputColor[2] = outputColor[2] / globalCounter;
 			outputColor[3] = outputColor[3] / globalCounter;
-	
-			return checkRange();
+			
+			color =checkRange();
 		}
+
+
+	
 	}
-	return -1;
+}
+	__declspec(dllexport) void stop()
+	{
+		
+		stopFlag = true;
+	}
+__declspec(dllexport) int getColor()
+{
+		
+	return color;
 }
