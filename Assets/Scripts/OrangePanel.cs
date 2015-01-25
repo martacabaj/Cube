@@ -3,20 +3,20 @@ using System.Collections;
 
 public class OrangePanel : MonoBehaviour {
 
-	int[] choices = {5,0,3,0,1};
+	int[] choices = {2,0,3,0,1};
 	int chosenPanel = 1;//1-5
-//	void OnCollisionEnter (Collision col)
-//	{
-//		if(col.gameObject.name == "FPC")
-//		{
-//			Application.LoadLevel("OrangeScene");
-//		}
-//	}
+	void OnCollisionEnter (Collision col)
+	{
+		if(col.gameObject.name == "FPC")
+		{
+			Application.LoadLevel("OrangeScene");
+		}
+	}
 
-//	void OnMouseDown() {
-//		if(Vector3.Distance(transform.position,GameObject.Find("FPC").transform.position) < 10)
-//			Application.LoadLevel("OrangeScene");
-//	}
+	void OnMouseDown() {
+		if(Vector3.Distance(transform.position,GameObject.Find("FPC").transform.position) < 10)
+			Application.LoadLevel("OrangeScene");
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -30,7 +30,7 @@ public class OrangePanel : MonoBehaviour {
 
 	void setColors() {
 		for(int i=0; i<choices.Length; i++) {
-			GameObject go = GameObject.Find("VerticalPanel"+(i+1));//.GetComponent<Transform>
+			GameObject go = GameObject.Find("VerticalPanelOG"+(i+1));//.GetComponent<Transform>
 			go.transform.Find("BlackSphere").transform.renderer.enabled = false;
 			if(i==chosenPanel)
 				go.transform.Find("BlackSphere").transform.renderer.enabled = true;
