@@ -149,7 +149,7 @@ public class CubeController : MonoBehaviour
 				float time = 0.0f;
 				while (time <= rotationTime) {
 						transform.rotation = Quaternion.Lerp (initialRotation, finalRotation, time);
-						time += Time.deltaTime / 2;
+						time += Time.deltaTime / 4;
 						yield return new WaitForEndOfFrame ();
 				}
 				transform.rotation = initialRotation = finalRotation;

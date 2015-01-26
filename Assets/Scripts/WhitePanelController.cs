@@ -1,33 +1,95 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-
+using System;
+using System.Runtime.InteropServices;
+using System.Threading;
 public class WhitePanelController : MonoBehaviour {
+	[DllImport("direction")]
+	private static extern int getDirection ();
+    [DllImport("direction")]
+    private static extern void start ();
+    [DllImport("direction")]
+    private static extern void end ();
 	int[] choices = {2,0,3,0,1};
 	int[] shouldBe = {1,2,1,2,2};
 	int chosenPanel = 1;//1-5
 	bool canUse = true;
-	
+		bool continueThreads=true;
+	int dir=-1;
+	bool used=true;
+	public void DirectionThread (EventHandler onThreadStop)
+		{
+			int previous = dir;
+			if(used){
+				dir = getDirection();
+				if(dir>=0 && previous!=dir){
+					Debug.Log(dir);
+					used=false;
+				}
+			}
+			
+		
+			OnThreadStop (null, EventArgs.Empty);
+
+		}
+		void OnThreadStop (object sender, EventArgs e)
+		{
+				if (continueThreads) {
+						new Thread (new ThreadStart (() => {
+								DirectionThread (OnThreadStop);
+						})).Start ();
+        
+				}else{
+                    end();
+                }
+		}
 	// Use this for initialization
 	void Start () {
-		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[3];
+		PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
+		pc.StopColor();
+		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[1];
 		setColors ();
+		new Thread (new ThreadStart (() =>
+                {
+
+                        start();
+                })).Start ();
+		   		new Thread (new ThreadStart (() =>
+				{
+
+						DirectionThread (OnThreadStop);
+				})).Start ();
+      
 	}
-	
+		void OnDestroy ()
+		{
+				continueThreads = false;
+		}
+
 	// Update is called once per frame
 	void Update () {
 		if (canUse) {
-			if (Input.GetKeyDown (KeyCode.W) == true) {
+	
+			if (dir==1 && !used) {
 				goUp ();
+				Debug.Log("DIR " +dir);
+				used = true;
 			}
-			if (Input.GetKeyDown (KeyCode.S) == true) {
+			if (dir==3&& !used) {
 				goDown ();
+				used = true;
+				Debug.Log("DIR " +dir);
 			} 
-			if (Input.GetKeyDown (KeyCode.A) == true) {
+			if (dir==0&& !used) {
 				goLeft ();
+				used = true;
+				Debug.Log("DIR "+ dir);
 			}
-			if (Input.GetKeyDown (KeyCode.D) == true) {
+			if (dir==2&& !used) {
 				goRight ();
+				Debug.Log("DIR "+ dir);
+				used = true;
 			}
 		}
 		

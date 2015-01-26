@@ -1,10 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CubeController.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\BluePanelController.cs">
     <Files>
-      <File FileName="Assets\Scripts\CubeController.cs" Line="37" Column="1" />
-      <File FileName="Assets\Scripts\WhiteWall.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GreenPanelController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\BluePanel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\BluePanelController.cs" Line="30" Column="8" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
