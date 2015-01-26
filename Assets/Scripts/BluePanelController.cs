@@ -8,12 +8,9 @@ using System.Threading;
  using System.IO;
 
 public class BluePanelController : MonoBehaviour {
-	[DllImport("movement")]
+	[DllImport("rubikCube102")]
 	private static extern int getDirection ();
-    [DllImport("movement")]
-    private static extern void startDirection ();
- 	[DllImport("movement")]
-    private static extern void stopDirection ();
+   
 	int[] choices = {2,0,3,0,1};
 	int[] shouldBe = {3,2,3,4,1};
 	int chosenPanel = 1;//1-5
@@ -40,12 +37,10 @@ public class BluePanelController : MonoBehaviour {
 		void OnThreadStop (object sender, EventArgs e)
 		{
 				if (continueThreads) {
-						new Thread (new ThreadStart (() => {
-								DirectionThread (OnThreadStop);
-						})).Start ();
+					new Thread (new ThreadStart (() => {
+						DirectionThread (OnThreadStop);
+					})).Start ();
         
-				}else{
-					stopDirection();
 				}
 		}
 	// Use this for initialization
@@ -55,16 +50,7 @@ public class BluePanelController : MonoBehaviour {
 		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[1];
 		setColors ();
 
-			new Thread (new ThreadStart (() =>
-                {
-		Debug.Log("startThread");
-                        startDirection();
-                })).Start ();
-		   		new Thread (new ThreadStart (() =>
-				{Debug.Log("dir");
-
-						DirectionThread (OnThreadStop);
-			})).Start ();
+			
 		
       
 	}
@@ -72,13 +58,20 @@ public class BluePanelController : MonoBehaviour {
 		{
 				continueThreads = false;
 				PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
-		pc.StartColor();
+				pc.StartColor();
 		}
-void Awake(){
-	Debug.Log("awake");
-	PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
-		pc.StopColor();
-}
+		void Awake(){
+			PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
+			pc.StopColor();
+			Debug.Log("awake");
+
+		   	new Thread (new ThreadStart (() =>
+			{
+				Debug.Log("dir");
+				DirectionThread (OnThreadStop);
+			})).Start ();
+			
+		}
 	// Update is called once per frame
 	void Update () {
 		

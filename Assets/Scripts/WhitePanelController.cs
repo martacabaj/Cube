@@ -5,12 +5,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 public class WhitePanelController : MonoBehaviour {
-	[DllImport("direction")]
+	[DllImport("rubikCube102")]
 	private static extern int getDirection ();
-    [DllImport("direction")]
-    private static extern void start ();
-    [DllImport("direction")]
-    private static extern void end ();
 	int[] choices = {2,0,3,0,1};
 	int[] shouldBe = {1,2,1,2,2};
 	int chosenPanel = 1;//1-5
@@ -40,31 +36,36 @@ public class WhitePanelController : MonoBehaviour {
 								DirectionThread (OnThreadStop);
 						})).Start ();
         
-				}else{
-                    end();
-                }
+				}
 		}
 	// Use this for initialization
 	void Start () {
-		PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
-		pc.StopColor();
+		
+		Debug.Log("start");
 		choices = GameObject.Find("CubeGlobal").GetComponent<CubeController>().choices[1];
 		setColors ();
-		new Thread (new ThreadStart (() =>
-                {
 
-                        start();
-                })).Start ();
-		   		new Thread (new ThreadStart (() =>
-				{
-
-						DirectionThread (OnThreadStop);
-				})).Start ();
+			
+		
       
 	}
 		void OnDestroy ()
 		{
 				continueThreads = false;
+				PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
+				pc.StartColor();
+		}
+		void Awake(){
+			PlayerController pc=GameObject.Find("FPC").GetComponent("PlayerController") as PlayerController;
+			pc.StopColor();
+			Debug.Log("awake");
+
+		   	new Thread (new ThreadStart (() =>
+			{
+				Debug.Log("dir");
+				DirectionThread (OnThreadStop);
+			})).Start ();
+			
 		}
 
 	// Update is called once per frame

@@ -7,17 +7,15 @@ using System.Threading;
 
 public class PlayerController : MonoBehaviour
 {
-		[DllImport("movement")]
-
+		[DllImport("rubikCube102")]
 		private static extern int getColor ();
-          [DllImport("movement")]
-            private static extern void startColor ();
-               [DllImport("movement")]
-            private static extern void end ();
-               [DllImport("movement")]
-            private static extern void init ();
-                      [DllImport("movement")]
-            private static extern void stopColors ();
+		// [DllImport("rubikCube100")]
+		// private static extern void startColor ();
+		[DllImport("rubikCube102")]
+		private static extern void openCam ();
+        [DllImport("rubikCube102")]
+		private static extern void releaseCam (); 
+                   
     #region Variables (private)
 
 		private bool grounded = false;
@@ -58,11 +56,12 @@ public class PlayerController : MonoBehaviour
 		private bool isRotating = false;
 		private Quaternion initialRotation;
 		public GameObject currentWall, cube, rotateTo;
-		public bool stopped=false;
+		public bool stopped = false;
+		public bool done =false;
+		Thread newThread;
+    	#endregion
 
-    #endregion
-
-    #region Unity event functions
+    	#region Unity event functions
 
 		/// <summary>
 		/// Use for initialization
@@ -74,45 +73,59 @@ public class PlayerController : MonoBehaviour
 				//Stops the Rigidbody rotating around the world X, Y and Z axes selectively
 				rigidbody.freezeRotation = true;
 				rigidbody.useGravity = true;
+				new Thread (new ThreadStart (() =>
+				{
+						Debug.Log ("start");
+						openCam();
+						 OnThreadStop (null, EventArgs.Empty);
+				})).Start ();
 
 
 		}
-		void OnDestroy ()
+		void OnDisable ()
 		{
+				
+				 continueColorSampling = false;
+				 while(!done){
+
+				 }
+				 releaseCam();
 			
-			continueColorSampling = false;
-			end();	
 		}
-		public void StopColor(){
+		public void StopColor ()
+		{
 			continueColorSampling = false;
+			
 		}
 		public void StartColor(){
 			continueColorSampling = true;
-			new Thread (new ThreadStart (() =>
-				{
 
+			new Thread (new ThreadStart (() =>
+			{
 						ColorThread (OnThreadStop);
-				})).Start ();
+			})).Start ();
 		}
 
 		public void ColorThread (EventHandler onThreadStop)
 		{
-				
-			color = getColor();
-			Debug.Log(color);
+				color = getColor();
+				Debug.Log (color);
 				
 				OnThreadStop (null, EventArgs.Empty);
 
 		}
 		void OnThreadStop (object sender, EventArgs e)
 		{
+			
 				if (continueColorSampling) {
+					done=false;
 						new Thread (new ThreadStart (() => {
 								ColorThread (OnThreadStop);
 						})).Start ();
         
-				}else{
-					stopColors();
+				
+				} else{
+					done =true;
 				}
 		}
 		/// <summary>
@@ -129,22 +142,8 @@ public class PlayerController : MonoBehaviour
 				colorFloorMap.Add (5, GameObject.Find ("Blue/Floor"));
 				currentWall = GameObject.Find ("Blue/Floor");
 				rotateTo = null;
-     			cube = GameObject.Find("CubeGlobal");
+				cube = GameObject.Find ("CubeGlobal");
 				initialRotation = cube.transform.rotation;
-              new Thread (new ThreadStart (() =>
-                {
-						stopped= false;
-						init();
-                         startColor();
-                })).Start ();
-				new Thread (new ThreadStart (() =>
-				{
-
-						ColorThread (OnThreadStop);
-				})).Start ();
-      
-
-
 		}
 		private const int samplingMax = 150;
 		private int samplingTime = 0;
@@ -190,49 +189,49 @@ public class PlayerController : MonoBehaviour
 		/// </summary>
 		void FixedUpdate ()
 		{
-				//if (color >=0) {
+			//if (color >=0) {
 
-						if (isRotating)
-								return;
-						if (rotateTo != null) {
+				if (isRotating)
+						return;
+				if (rotateTo != null) {
                
-								StartCoroutine (SmoothRotation (rotateTo));
-						} else {
-								//   Camera.main.transform.LookAt(colorFloorMap[color].transform);
-							//	Quaternion rotation = Quaternion.LookRotation (colorFloorMap [color].transform.position);
-							//	Camera.main.transform.rotation = rotation;
-								//	Rotating(45f, 0f);
-								// Cache de input
-								//Vector3(left/right, up/down, forward/back)
+						StartCoroutine (SmoothRotation (rotateTo));
+				} else {
+						 //Camera.main.transform.LookAt(colorFloorMap[color].transform);
+							//Quaternion rotation = Quaternion.LookRotation (colorFloorMap [color].transform.position);
+							//Camera.main.transform.rotation = rotation;
+						//	Rotating(45f, 0f);
+						// Cache de input
+						//Vector3(left/right, up/down, forward/back)
 
-								var inputVector = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
+						var inputVector = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));//0.2f);
 
 
-								// On the ground
-								if (grounded) {
-										// Apply a force that attempts to reach our target velocity
-										var velocityChange = CalculateVelocityChange (inputVector);
-										//ForceMode elocityChange- Add an instant velocity change to the rigidbody, ignoring its mass.
-										rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
+						// On the ground
+						if (grounded) {
+								// Apply a force that attempts to reach our target velocity
+								var velocityChange = CalculateVelocityChange (inputVector);
+								//ForceMode elocityChange- Add an instant velocity change to the rigidbody, ignoring its mass.
+								rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 
-										// Jump
-										if (canJump && jumpFlag) {
-												jumpFlag = false;
-												rigidbody.velocity = new Vector3 (rigidbody.velocity.x, rigidbody.velocity.y + CalculateJumpVerticalSpeed (), rigidbody.velocity.z);
-										}
-
-										// By setting the grounded to false in every FixedUpdate we avoid
-										// checking if the character is not grounded on OnCollisionExit()
-										//grounded = false;
+								// Jump
+								if (canJump && jumpFlag) {
+										jumpFlag = false;
+										rigidbody.velocity = new Vector3 (rigidbody.velocity.x, rigidbody.velocity.y + CalculateJumpVerticalSpeed (), rigidbody.velocity.z);
 								}
+
+								// By setting the grounded to false in every FixedUpdate we avoid
+								// checking if the character is not grounded on OnCollisionExit()
+								//grounded = false;
+						}
             // In mid-air
             else {
-										// Uses the input vector to affect the mid air direction
-										var velocityChange = Camera.main.transform.TransformDirection (inputVector) * inAirControl;
-										rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
-								}
+								// Uses the input vector to affect the mid air direction
+								var velocityChange = Camera.main.transform.TransformDirection (inputVector) * inAirControl;
+								rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 						}
-			//	}
+				}
+				//	}
 		}
 
 		// Unparent if we are no longer standing on our parent

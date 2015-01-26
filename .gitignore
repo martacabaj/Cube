@@ -14,3 +14,7 @@ Assets/Plugins/kurwa.dll
 Assets/Plugins/kurwa.dll.meta
 rubikDll/rubik/Release/rubik.tlog/
 rubikDll/rubik/Release/
+rubikCube/Debug/
+rubikCube/rubikCube/Debug/
+rubikCube/rubikCube/Release/
+rubikCube/Release/
