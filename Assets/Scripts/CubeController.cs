@@ -8,7 +8,7 @@ using System.Linq;
 public class CubeController : MonoBehaviour
 {
 		public bool smallSceneLoaded = false;
-		private float rotationTime = 1.0f;
+		private float rotationTime = 2.0f;
 		private bool isRotating = false;
 		private Quaternion initialRotation;
 		public GameObject yellowFloor, whiteFloor, blueFloor, greenFloor, redFloor, orangeFloor;
